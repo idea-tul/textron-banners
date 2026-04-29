@@ -25,11 +25,11 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        working-directory: ./tac25027
+        working-directory: ./tex25830
         run: npm install
 
       - name: Build banners for release
-        working-directory: ./tac25027
+        working-directory: ./tex25830
         run: |
           npm run process-templates
           npm run build
@@ -38,7 +38,7 @@ jobs:
 
       - name: Get project info
         id: project_info
-        working-directory: ./tac25027
+        working-directory: ./tex25830
         run: |
           PROJECT_NAME=$(node -p "require('./package.json').name")
           PROJECT_TITLE=$(node -p "require('./package.json').title")
@@ -51,16 +51,16 @@ jobs:
           mkdir -p release-package
 
           # Copy deployment zips
-          cp -r tac25027/_deploy release-package/deployment-zips
+          cp -r tex25830/_deploy release-package/deployment-zips
 
           # Copy review site
-          cp -r tac25027/_review release-package/review-site
+          cp -r tex25830/_review release-package/review-site
 
           # Copy source files (for reference)
           mkdir -p release-package/source
-          cp -r tac25027/banners release-package/source/
-          cp tac25027/package.json release-package/source/
-          cp tac25027/BUILD_MIGRATION.md release-package/
+          cp -r tex25830/banners release-package/source/
+          cp tex25830/package.json release-package/source/
+          cp tex25830/BUILD_MIGRATION.md release-package/
 
           # Create main archive
           cd release-package
@@ -68,7 +68,7 @@ jobs:
           cd ..
 
           # Create individual deployment archive
-          cd tac25027/_deploy
+          cd tex25830/_deploy
           zip -r "../../${{ steps.project_info.outputs.name }}-deployment.zip" .
           cd ../..
 
