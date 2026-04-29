@@ -1,0 +1,105 @@
+/* Edit styles in source.css; style.css is generated. */
+$width: 320px;
+$height: 50px;
+
+*, *:before, *:after { box-sizing: border-box; }
+
+#ad {
+  display: block;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  margin: auto;
+  width: $width;
+  height: $height;
+  background: #fff;
+  overflow: hidden;
+  user-select: none;
+}
+
+.btn-overlay {
+  display: block;
+  position: absolute;
+  z-index: 50;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.btn-overlay:before {
+  content: "";
+  position: absolute;
+  z-index: 99;
+  inset: 0;
+  border: 1px solid #666;
+}
+
+.banner {
+  position: relative;
+  width: $width;
+  height: $height;
+  background: #fff;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.frame img {
+  position: absolute;
+  display: block;
+}
+
+
+.frame .image1 {
+  left: 215px;
+  top: -14px;
+  width: 128px;
+  height: 102px;
+  z-index: 1;
+}
+
+.frame .image2 {
+  left: 215px;
+  top: -14px;
+  width: 128px;
+  height: 102px;
+  z-index: 2;
+}
+
+.frame .logo1 {
+  left: 10px;
+  top: 9px;
+  width: 71px;
+  height: 16.507px;
+  z-index: 6;
+}
+
+.frame .logo2 {
+  left: 9px;
+  top: 31px;
+  width: 72px;
+  height: 11.477px;
+  z-index: 6;
+}
+
+.frame .separator {
+  left: 92px;
+  top: 7px;
+  width: 1px;
+  height: 35px;
+  z-index: 6;
+}
+
+.frame .headline {
+  left: 103.31px;
+  top: 10.81px;
+  width: 88.57px;
+  height: 28.4px;
+  z-index: 7;
+}
