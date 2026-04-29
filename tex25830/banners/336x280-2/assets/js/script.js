@@ -34,16 +34,15 @@ var timeline = (function MasterTimeline() {
     mainTl
       .set(".bg", { autoAlpha: 0, scale: 1.05 })
       .set(".image1, .image2", { autoAlpha: 0 })
-      .set(".footer-bg, .cta-bar", { autoAlpha: 0, y: 20 })
-      .set(".logo, .logo1, .logo2, .cta, .separator", { autoAlpha: 0, y: 10 })
-      .set(".headline", { autoAlpha: 0, y: 20 })
+      .set(".headline", { autoAlpha: 0, y: -30 })
+      .set(".footer-bg, .logo, .logo1, .logo2, .separator", { autoAlpha: 0, y: -20 })
+      .set(".cta-bar, .cta", { autoAlpha: 0, y: -20 })
       .addLabel("start")
-      .to(".bg", { duration: 1.2, autoAlpha: 1, scale: 1, ease: "power2.out" }, "start")
-      .to(".image1, .image2", { duration: 0.6, autoAlpha: 1, ease: "power2.out" }, "start+=0.2")
-      .to(".footer-bg, .cta-bar", { duration: 0.5, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=0.4")
-      .to(".logo, .logo1, .logo2, .separator", { duration: 0.5, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=0.6")
-      .to(".cta", { duration: 0.5, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=0.7")
-      .to(".headline", { duration: 0.7, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=0.5");
+      .to(".bg", { duration: 0.8, autoAlpha: 1, scale: 1, ease: "power2.out" }, "start")
+      .to(".image1, .image2", { duration: 0.4, autoAlpha: 1, ease: "power2.out" }, "start+=0.15")
+      .to(".headline", { duration: 0.4, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=0.3")
+      .to(".footer-bg, .logo, .logo1, .logo2, .separator", { duration: 0.4, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=0.7")
+      .to(".cta-bar, .cta", { duration: 0.4, autoAlpha: 1, y: 0, ease: "power2.out" }, "start+=1.1");
 
     return mainTl;
   }
