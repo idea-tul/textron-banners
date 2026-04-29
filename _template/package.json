@@ -36,6 +36,11 @@
   "devDependencies": {
     "vite": "^5.0.0",
     "autoprefixer": "^10.4.16",
+    "imagemin": "^9.0.1",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-jpegtran": "^8.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-svgo": "^11.0.1",
     "postcss": "^8.4.32",
     "postcss-advanced-variables": "^3.0.1",
     "postcss-calc": "^9.0.1",
