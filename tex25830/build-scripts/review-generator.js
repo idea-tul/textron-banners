@@ -394,6 +394,14 @@ class ReviewGenerator {
         // Banner data
         const banners = ${JSON.stringify(banners)};
         let currentBanner = 0;
+
+        // Restore banner from URL hash on load
+        function getBannerIndexFromHash() {
+            const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+            if (!hash) return null;
+            const idx = banners.findIndex(b => b.name === hash);
+            return idx >= 0 ? idx : null;
+        }
         
         // Hamburger menu toggle
         const hamburger = document.getElementById('hamburger');
@@ -421,6 +429,10 @@ class ReviewGenerator {
         function loadBanner(index) {
             currentBanner = index;
             const banner = banners[index];
+            // Persist selection in URL hash
+            if (window.location.hash !== '#' + banner.name) {
+                history.replaceState(null, '', '#' + banner.name);
+            }
             
             // Update active state in menu
             document.querySelectorAll('.dropdown-item').forEach((item, i) => {
@@ -460,6 +472,18 @@ class ReviewGenerator {
             dropdown.classList.remove('active');
         }
         
+        // Load initial banner from hash if present
+        const initialIndex = getBannerIndexFromHash();
+        if (initialIndex !== null) {
+            loadBanner(initialIndex);
+        }
+
+        // Sync if hash changes (back/forward)
+        window.addEventListener('hashchange', () => {
+            const idx = getBannerIndexFromHash();
+            if (idx !== null && idx !== currentBanner) loadBanner(idx);
+        });
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' && currentBanner > 0) {
