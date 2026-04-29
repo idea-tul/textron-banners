@@ -101,15 +101,82 @@ class BannerDeployer {
       /src="\.\.\/\.\.\/assets\/img\//g,
       'src="assets/img/'
     );
+    // Vite adds `crossorigin` to <link rel="stylesheet"> tags; browsers
+    // block crossorigin requests from file:// URLs (unique opaque origin),
+    // which prevents the CSS from loading when reviewers open the unzipped
+    // banner directly. Strip it so the deployed banner works from disk.
+    htmlContent = htmlContent.replace(
+      /<link\b([^>]*?)\s+crossorigin(?=[\s>])/g,
+      '<link$1'
+    );
 
     return htmlContent;
+  }
+
+  /**
+   * Losslessly compress images in a directory in place.
+   * Only keeps the compressed output when it is actually smaller than the
+   * original — the upstream build already runs lossy compression, so a
+   * lossless re-encode can sometimes grow the file.
+   * Returns total bytes saved.
+   * @param {string} dir
+   * @returns {Promise<number>}
+   */
+  async compressImagesIn(dir) {
+    const patterns = ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.svg"].map((p) =>
+      path.join(dir, p)
+    );
+
+    const matches = patterns.flatMap((p) => glob.sync(p));
+    if (matches.length === 0) return 0;
+
+    const [
+      { default: imagemin },
+      { default: imageminJpegtran },
+      { default: imageminOptipng },
+      { default: imageminGifsicle },
+      { default: imageminSvgo },
+    ] = await Promise.all([
+      import("imagemin"),
+      import("imagemin-jpegtran"),
+      import("imagemin-optipng"),
+      import("imagemin-gifsicle"),
+      import("imagemin-svgo"),
+    ]);
+
+    const files = await imagemin(matches, {
+      plugins: [
+        imageminJpegtran(),
+        imageminOptipng({ optimizationLevel: 7 }),
+        imageminGifsicle({ optimizationLevel: 3 }),
+        imageminSvgo({
+          plugins: [
+            {
+              name: "preset-default",
+              params: { overrides: { removeViewBox: false } },
+            },
+          ],
+        }),
+      ],
+    });
+
+    let saved = 0;
+    for (const file of files) {
+      const beforeSize = fs.statSync(file.sourcePath).size;
+      const afterSize = file.data.length;
+      if (afterSize < beforeSize) {
+        fs.writeFileSync(file.sourcePath, file.data);
+        saved += beforeSize - afterSize;
+      }
+    }
+    return saved;
   }
 
   /**
    * Prepare a single banner for deployment
    * @param {string} bannerName - Name of the banner (e.g., "970x250")
    */
-  prepareBanner(bannerName) {
+  async prepareBanner(bannerName) {
     const reviewBannerDir = path.join(this.reviewDir, "banners", bannerName);
     const deployBannerDir = path.join(this.deployDir, bannerName);
 
@@ -173,7 +240,16 @@ class BannerDeployer {
       this.copyDirectory(reviewJsDir, jsDir);
     }
 
-    console.log(`✅ Prepared ${bannerName} for deployment`);
+    // Lossless compression pass on images bundled into the deploy folder
+    let saved = 0;
+    const imgDir = path.join(assetsDir, "img");
+    if (fs.existsSync(imgDir)) {
+      saved += await this.compressImagesIn(imgDir);
+    }
+    saved += await this.compressImagesIn(deployBannerDir); // catches fallback.jpg
+
+    const savedKB = (saved / 1024).toFixed(1);
+    console.log(`✅ Prepared ${bannerName} for deployment (saved ${savedKB}KB)`);
   }
 
   /**
@@ -234,9 +310,9 @@ class BannerDeployer {
 
     console.log(`\n🚀 Deploying ${bannerNames.length} banners...\n`);
 
-    // Prepare each banner
+    // Prepare each banner (sequentially so compression logs are readable)
     for (const bannerName of bannerNames) {
-      this.prepareBanner(bannerName);
+      await this.prepareBanner(bannerName);
     }
 
     console.log(`\n📦 Creating zip files...\n`);
