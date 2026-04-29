@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="ad.size" content="width=320, height=50" />
+    <title>Ad Banner: 320x50</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      var clickTag = "https://www.google.com/";
+    </script>
+  </head>
+  <body>
+    <div id="ad">
+      <button id="clickthrough-button" class="btn-overlay"></button>
+      <div class="banner" style="display: none">
+        <div class="frame" id="frame1">
+          <img class="logo1" src="assets/img/logo1.png" alt="Logo" />
+          <img class="logo2" src="assets/img/logo2.png" alt="By Textron Aviation" />
+          <img class="separator" src="assets/img/line.png" alt="" />
+          <img class="cta" src="assets/img/cta.png" alt="Now Hiring" />
+          <img class="headline" src="assets/img/headline.png" alt="" />
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- {inject:ad-platform-lib-url} -->
+    <script src="assets/js/script.js"></script>
+    <!-- {inject:banner-controls} -->
+  </body>
+</html>

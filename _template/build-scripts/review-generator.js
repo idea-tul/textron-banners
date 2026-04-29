@@ -394,6 +394,13 @@ class ReviewGenerator {
         // Banner data
         const banners = ${JSON.stringify(banners)};
         let currentBanner = 0;
+
+        function getBannerIndexFromHash() {
+            const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+            if (!hash) return null;
+            const idx = banners.findIndex(b => b.name === hash);
+            return idx >= 0 ? idx : null;
+        }
         
         // Hamburger menu toggle
         const hamburger = document.getElementById('hamburger');
@@ -421,6 +428,9 @@ class ReviewGenerator {
         function loadBanner(index) {
             currentBanner = index;
             const banner = banners[index];
+            if (window.location.hash !== '#' + banner.name) {
+                history.replaceState(null, '', '#' + banner.name);
+            }
             
             // Update active state in menu
             document.querySelectorAll('.dropdown-item').forEach((item, i) => {
@@ -460,6 +470,16 @@ class ReviewGenerator {
             dropdown.classList.remove('active');
         }
         
+        const initialIndex = getBannerIndexFromHash();
+        if (initialIndex !== null) {
+            loadBanner(initialIndex);
+        }
+
+        window.addEventListener('hashchange', () => {
+            const idx = getBannerIndexFromHash();
+            if (idx !== null && idx !== currentBanner) loadBanner(idx);
+        });
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' && currentBanner > 0) {
